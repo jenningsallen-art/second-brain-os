@@ -114,6 +114,70 @@ else
   VAULT_SEED_MODE="seed"
 fi
 
+# --- step 1b: dependency checks (advisory; do not block) ----------------------
+
+step "Step 1b — Dependency checks"
+
+# Krisp MCP detection. Check the locations where Claude Code might store
+# MCP configuration. We grep for "krisp" (case-insensitive) across all of them.
+KRISP_FOUND=0
+KRISP_LOCATIONS=(
+  "$HOME/.claude/settings.json"
+  "$HOME/.claude/mcp.json"
+  "$HOME/.claude/config.json"
+  "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+  "$HOME/.config/claude/settings.json"
+)
+for loc in "${KRISP_LOCATIONS[@]}"; do
+  if [[ -f "$loc" ]] && grep -qi "krisp" "$loc" 2>/dev/null; then
+    KRISP_FOUND=1
+    ok "Krisp MCP detected in $loc"
+    break
+  fi
+done
+
+if [[ $KRISP_FOUND -eq 0 ]]; then
+  warn "Krisp MCP not detected in any standard config location."
+  warn "Krisp powers meeting capture — the morning brief and evening wrap"
+  warn "lean on its transcripts. The system still installs without it, but"
+  warn "the daily processes will run thinner."
+  echo
+  echo "    See docs/krisp-setup.md for configuration steps."
+  echo
+  read -r -p "    Continue without Krisp? [y/N] " KRISP_SKIP
+  if [[ ! "${KRISP_SKIP:-N}" =~ ^[Yy]$ ]]; then
+    info "Aborting. Configure Krisp, then re-run ./install.sh."
+    exit 0
+  fi
+fi
+
+# Obsidian plugin check. Tasks and Dataview are required for Tasks Dashboard
+# to render. Read .obsidian/community-plugins.json if present.
+PLUGINS_FILE="$VAULT_PATH/.obsidian/community-plugins.json"
+TASKS_OK=0
+DATAVIEW_OK=0
+
+if [[ -f "$PLUGINS_FILE" ]]; then
+  if grep -q '"obsidian-tasks-plugin"' "$PLUGINS_FILE" 2>/dev/null; then
+    TASKS_OK=1
+  fi
+  if grep -q '"dataview"' "$PLUGINS_FILE" 2>/dev/null; then
+    DATAVIEW_OK=1
+  fi
+
+  if [[ $TASKS_OK -eq 1 && $DATAVIEW_OK -eq 1 ]]; then
+    ok "Obsidian Tasks + Dataview plugins enabled."
+  else
+    [[ $TASKS_OK -eq 0 ]]    && warn "Obsidian Tasks plugin not enabled — required for Tasks Dashboard."
+    [[ $DATAVIEW_OK -eq 0 ]] && warn "Obsidian Dataview plugin not enabled — required for Tasks Dashboard."
+    info "Enable them in Obsidian: Settings → Community plugins → Browse → search Tasks / Dataview → install + enable."
+    info "(Continuing — TASKS.md and skills work without these; only the dashboard view needs them.)"
+  fi
+else
+  warn "$VAULT_PATH/.obsidian/ not found. Open the vault in Obsidian once first to initialize, then enable Tasks + Dataview plugins."
+  info "(Continuing — the vault still seeds correctly. Plugin check moot until you open Obsidian.)"
+fi
+
 # --- step 2: install skills ---------------------------------------------------
 
 step "Step 2 — Install skills to ~/.claude/skills/"
