@@ -191,6 +191,7 @@ Authoritative table — substitution engine reads from this list when applying t
 | `{{VAULT_PATH}}` | Step 2.3 | "/Users/jane/Vault" |
 | `{{ORG_DOMAIN}}` | Step 2.4 | "acme.com" |
 | `{{TIER_1_SENDERS}}` | Step 3, first 3 emails | "person@x.com, person@y.com, person@z.com" |
+| `{{TIER_1_SENDERS_QUERY}}` | derived from `{{TIER_1_SENDERS}}` | "from:person@x.com OR from:person@y.com OR from:person@z.com" — Gmail-search format used inside `is:unread (...)` |
 | `{{TIER_1_PEOPLE}}` | Step 3, first 3 full names | "[[A B]], [[C D]], [[E F]]" |
 | `{{DIRECT_REPORTS}}` | Step 3 flagged | "[[A B]], [[C D]]" |
 | `{{ASANA_WORKSPACE}}` | Step 6 if Asana=YES | numeric ID, otherwise section stripped |
