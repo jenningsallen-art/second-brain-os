@@ -89,19 +89,24 @@ if [[ -f "$VAULT_PATH/CLAUDE.md" ]]; then
   warn "This means you already have a personalized install."
   echo
   echo "    Options:"
-  echo "      [b] Back it up (CLAUDE.md → CLAUDE.md.backup-$(date +%Y%m%d-%H%M)) and continue"
-  echo "      [k] Keep it; skip vault seeding (only install skills)"
+  echo "      [b] Back up CLAUDE.md (and Memory.md if present) and replace with fresh templates"
+  echo "      [k] Keep yours; skip vault seeding (only install skills)"
   echo "      [a] Abort"
   echo
   read -r -p "    Choice: " EXISTING_CHOICE
-  case "${EXISTING_CHOICE,,}" in
-    b)
-      BACKUP_PATH="$VAULT_PATH/CLAUDE.md.backup-$(date +%Y%m%d-%H%M)"
-      cp "$VAULT_PATH/CLAUDE.md" "$BACKUP_PATH"
-      ok "Backed up CLAUDE.md to $(basename "$BACKUP_PATH")"
+  case "$EXISTING_CHOICE" in
+    [Bb])
+      BACKUP_STAMP="$(date +%Y%m%d-%H%M)"
+      # Move (not copy) so the seed loop below sees an empty slot and writes the fresh template.
+      mv "$VAULT_PATH/CLAUDE.md" "$VAULT_PATH/CLAUDE.md.backup-$BACKUP_STAMP"
+      ok "Backed up CLAUDE.md → CLAUDE.md.backup-$BACKUP_STAMP"
+      if [[ -f "$VAULT_PATH/Memory.md" ]]; then
+        mv "$VAULT_PATH/Memory.md" "$VAULT_PATH/Memory.md.backup-$BACKUP_STAMP"
+        ok "Backed up Memory.md → Memory.md.backup-$BACKUP_STAMP"
+      fi
       VAULT_SEED_MODE="seed"
       ;;
-    k)
+    [Kk])
       VAULT_SEED_MODE="skip"
       info "Skipping vault seeding. Skills will still install."
       ;;
@@ -283,5 +288,5 @@ cat <<EOF
 
 EOF
 
-info "$(dim "If you hit a snag, see docs/troubleshooting.md (ships in a future release).")"
+info "$(dim "If you hit a snag, see docs/troubleshooting.md.")"
 echo
