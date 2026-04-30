@@ -34,7 +34,7 @@ Use gcal_list_events for today and tomorrow. Focus on WHO is in each meeting and
 
 <!-- OPTIONAL:slack -->
 ### Check Slack for Strategic Signal
-Use slack_search_public_and_private for overnight mentions/DMs. Scan for: messages from Tier 1 stakeholders ({{TIER_1_PEOPLE}}), messages from direct reports ({{DIRECT_REPORTS}}), anything that changes the priority landscape.
+Use slack_search_public_and_private for overnight mentions/DMs. Scan for: messages from Tier 1 stakeholders ({{TIER_1_PEOPLE}}), messages from {{DELEGATION_LABEL}} ({{DELEGATION_NAMES}}), anything that changes the priority landscape.
 <!-- /OPTIONAL:slack -->
 
 <!-- OPTIONAL:gmail -->
@@ -51,7 +51,12 @@ Use gmail_search_messages with `is:unread from:{{ORG_DOMAIN}}` excluding Tier 1 
 Use gmail_search_messages with `is:unread -category:promotions -category:social -from:{{ORG_DOMAIN}}` to catch remaining inbox. Apply strict filter:
 - **Surface:** Direct vendor/prospect emails with a real human writing to the user, system alerts that indicate breakage
 - **Skip entirely:** Marketing emails, webinar invites, newsletter digests, video-call join notifications, tool promotions, receipts, auto-generated meeting notes (these are captured via Krisp digest)
+<!-- OPTIONAL:has_direct_reports -->
 - **Route to team:** System errors that a direct report should handle
+<!-- /OPTIONAL:has_direct_reports -->
+<!-- OPTIONAL:no_direct_reports -->
+- **Route up or hand off:** System errors that need an owner — escalate up or hand to a cross-functional partner ({{DELEGATION_NAMES}})
+<!-- /OPTIONAL:no_direct_reports -->
 
 For each surfaced email, tag with: `respond / delegate / FYI / archive`
 <!-- /OPTIONAL:gmail -->
@@ -59,7 +64,7 @@ For each surfaced email, tag with: `respond / delegate / FYI / archive`
 <!-- OPTIONAL:drive -->
 ### Check Google Drive
 Use google_drive_search for documents modified since yesterday. Focus on:
-- Documents shared by leadership or direct reports
+- Documents shared by leadership or {{DELEGATION_LABEL}}
 - Updated strategy docs, planning docs, or project briefs
 - Shared meeting notes
 - New docs in folders the user owns or collaborates on
@@ -91,12 +96,18 @@ Map Active Priorities into three buckets:
 
 **Stalled / At Risk**: Which priorities have no recent signal — no Slack threads, no calendar time, no project movement? Don't just list them. Diagnose WHY: blocked by someone? No owner? User avoiding it? Wrong priority? Recommend ONE move: delegate it, kill it, or escalate it.
 
-**The Noise**: Name 2-3 things that will try to grab attention today that are below the user's role altitude. Be direct: "This is a {{DIRECT_REPORTS}} problem, not yours" or "Delegate this."
+**The Noise**: Name 2-3 things that will try to grab attention today that are below the user's role altitude. Be direct.
+<!-- OPTIONAL:has_direct_reports -->
+Use phrasing like: "This is a direct-report problem, not yours" or "Delegate this to {{DELEGATION_NAMES}}."
+<!-- /OPTIONAL:has_direct_reports -->
+<!-- OPTIONAL:no_direct_reports -->
+Use phrasing like: "This is below your altitude — decline, route up, or hand to a cross-functional partner ({{DELEGATION_NAMES}})."
+<!-- /OPTIONAL:no_direct_reports -->
 
 #### Section 2: Delegation Filter
 For items requiring response, apply ONE filter: "Does this require {{USER_ROLE}}-level judgment?"
 - **Requires the user**: One sentence on why. Link to source.
-- **Route to team**: Name who (from {{DIRECT_REPORTS}}) + a one-line handoff message the user can copy-paste send.
+- **Route to team**: Name who from {{DELEGATION_NAMES}} + a one-line handoff message the user can copy-paste send.
 
 #### Section 3: Daily Challenge
 ONE provocative question using mental models from the thinking-partner skill. Rotate by day of week:
@@ -128,9 +139,11 @@ Compressed, scannable, every item tagged with a recommended action.
 
 **Stale Items**: Action items >5 days old, projects not modified in 7+ days. Each tagged: delegate / kill / escalate / do tomorrow.
 
+<!-- OPTIONAL:has_direct_reports -->
 <!-- OPTIONAL:asana -->
 **Team Health**: Overdue tasks on managed projects, blocked team members. Formatted as nudges with [[backlinks]] to people.
 <!-- /OPTIONAL:asana -->
+<!-- /OPTIONAL:has_direct_reports -->
 
 <!-- OPTIONAL:drive -->
 <!-- OPTIONAL:notion -->

@@ -88,12 +88,19 @@ Map to: `{{USER_NAME}}`, `{{USER_ROLE}}`, `{{USER_COMPANY}}`, `{{VAULT_PATH}}`, 
 Accept up to 10. After collecting, confirm:
 - Tier 1 = first 3 (always surface)
 - Tier 2 = remaining (surfaced when relevant)
-- Ask: "Any of these your direct reports? I'll flag those for delegation tracking."
+- Ask: "Any of these your direct reports? List names, or say 'none — I'm an IC' if you don't manage anyone."
+
+If the user has direct reports → set `{{HAS_DIRECT_REPORTS}}` = `true` and add `has_direct_reports` to `{{OPTIONAL_SECTIONS}}`.
+If the user says "none / IC / no one" → set `{{HAS_DIRECT_REPORTS}}` = `false` and add `no_direct_reports` to `{{OPTIONAL_SECTIONS}}`. Then ask: "Who are your 2–3 most frequent cross-functional partners? Delegation suggestions in your morning brief will route to them instead of direct reports." Capture as `{{CROSS_FUNCTIONAL_PARTNERS}}` (full-name backlinks).
 
 Map to:
 - `{{TIER_1_SENDERS}}` = first 3 emails, comma-separated
 - `{{TIER_1_PEOPLE}}` = first 3 full names for backlinks
-- `{{DIRECT_REPORTS}}` = subset flagged as direct reports
+- `{{HAS_DIRECT_REPORTS}}` = `true` | `false` (gates manager-vs-IC prose in templates)
+- `{{DIRECT_REPORTS}}` = subset flagged as direct reports (empty for IC)
+- `{{CROSS_FUNCTIONAL_PARTNERS}}` = IC-only fallback list (empty for managers)
+- `{{DELEGATION_LABEL}}` = derived: `"direct reports"` if manager, else `"cross-functional partners"`
+- `{{DELEGATION_NAMES}}` = derived: `{{DIRECT_REPORTS}}` if manager, else `{{CROSS_FUNCTIONAL_PARTNERS}}`. Used by morning-brief prose where the prior version hardcoded "direct reports".
 
 ### Step 4 — Working style
 
@@ -137,7 +144,10 @@ Map answers into Memory.md as project context and into the morning/evening voice
 > Cowork? (Y/N for each.)"
 
 For each YES, ask the follow-up:
-- **Asana:** "Workspace ID? User GID?" → `{{ASANA_WORKSPACE}}`, `{{ASANA_USER_GID}}`
+- **Asana:** "I need both your Workspace ID and User GID — these wire the morning brief to the right project view. You can find them in your Asana profile URL (see `docs/troubleshooting.md` if you're not sure where). Do you have them now?"
+   - If user supplies both → capture `{{ASANA_WORKSPACE}}`, `{{ASANA_USER_GID}}`; keep `asana` in `{{OPTIONAL_SECTIONS}}`.
+   - If user says "not now" / "skip" / "I'll find them later" → drop `asana` from `{{OPTIONAL_SECTIONS}}` for this run; set `{{ASANA_WORKSPACE}}` and `{{ASANA_USER_GID}}` to empty (the OPTIONAL block is stripped, so the variables won't appear in output anyway). Print: "Asana skipped. Re-run `/personalize-second-brain --update` once you have your IDs to wire it in."
+   - **Never accept blank, `TODO`, or placeholder values for the IDs.** The substitution validator will hard-fail on remaining `{{ASANA_*}}` markers.
 - **Slack:** (no follow-up; MCP handles auth) → enable Slack section
 - **Gmail:** (uses `{{ORG_DOMAIN}}` from Step 2) → enable Gmail Tier 1/2/3 logic
 - **Google Calendar:** (no follow-up) → enable calendar-aware briefing
@@ -193,14 +203,18 @@ Authoritative table — substitution engine reads from this list when applying t
 | `{{TIER_1_SENDERS}}` | Step 3, first 3 emails | "person@x.com, person@y.com, person@z.com" |
 | `{{TIER_1_SENDERS_QUERY}}` | derived from `{{TIER_1_SENDERS}}` | "from:person@x.com OR from:person@y.com OR from:person@z.com" — Gmail-search format used inside `is:unread (...)` |
 | `{{TIER_1_PEOPLE}}` | Step 3, first 3 full names | "[[A B]], [[C D]], [[E F]]" |
-| `{{DIRECT_REPORTS}}` | Step 3 flagged | "[[A B]], [[C D]]" |
-| `{{ASANA_WORKSPACE}}` | Step 6 if Asana=YES | numeric ID, otherwise section stripped |
-| `{{ASANA_USER_GID}}` | Step 6 if Asana=YES | numeric ID, otherwise section stripped |
+| `{{HAS_DIRECT_REPORTS}}` | Step 3 IC question | `true` (manager) \| `false` (IC). Adds `has_direct_reports` or `no_direct_reports` to `{{OPTIONAL_SECTIONS}}`. |
+| `{{DIRECT_REPORTS}}` | Step 3 flagged (manager only) | "[[A B]], [[C D]]" — empty for IC |
+| `{{CROSS_FUNCTIONAL_PARTNERS}}` | Step 3 IC follow-up | "[[X Y]], [[Z W]]" — empty for managers |
+| `{{DELEGATION_LABEL}}` | derived from `{{HAS_DIRECT_REPORTS}}` | `"direct reports"` (manager) \| `"cross-functional partners"` (IC) |
+| `{{DELEGATION_NAMES}}` | derived | `{{DIRECT_REPORTS}}` if manager, else `{{CROSS_FUNCTIONAL_PARTNERS}}`. Inserted into morning-brief prose where the prior version hardcoded "direct reports". |
+| `{{ASANA_WORKSPACE}}` | Step 6 if Asana=YES (numeric ID required) | numeric ID — never `TODO` or blank. Validator hard-fails on placeholder. If user can't provide, drop `asana` from `{{OPTIONAL_SECTIONS}}` and re-run with `--update` later. |
+| `{{ASANA_USER_GID}}` | Step 6 if Asana=YES (numeric ID required) | numeric ID — same rule as workspace. |
 | `{{ARCHETYPE}}` | Step 1 / 1b | `strategic` \| `coordinator` \| `executor` (internal) |
 | `{{ARCHETYPE_VOICE}}` | derived from `{{ARCHETYPE}}` | strategic→chief-of-staff; coordinator→synthesizer; executor→operational |
 | `{{PUSH_BACK_MODE}}` | Step 4 | `on` \| `off` |
 | `{{DIRECTNESS}}` | Step 4 | `blunt` \| `balanced` \| `diplomatic` |
-| `{{OPTIONAL_SECTIONS}}` | Step 6 | array of enabled tags: `[gmail, slack, asana, calendar, drive, notion]` |
+| `{{OPTIONAL_SECTIONS}}` | Step 3 + Step 6 | array of enabled tags: `[gmail, slack, asana, calendar, drive, notion, has_direct_reports \| no_direct_reports]`. Exactly one of `has_direct_reports` / `no_direct_reports` is always present. |
 | `{{MORNING_TIME}}` | Step 7 | "06:45" |
 | `{{EVENING_TIME}}` | Step 7 | "17:05" |
 | `{{SCHEDULE_DAYS}}` | Step 7 | `weekdays` \| `daily` |
@@ -209,14 +223,28 @@ Authoritative table — substitution engine reads from this list when applying t
 
 When applying templates to the morning-brief and evening-wrap SKILL.md files:
 
-1. Read the template (canonical version under `~/.claude/scheduled-tasks/<task>/SKILL.md` —
-   should match the `scheduled-tasks/<task>.template.md` shipped with the repo).
+1. Read the source template from the repo: `<repo>/scheduled-tasks/<task>.template.md`. (Do not read the user's existing `~/.claude/scheduled-tasks/<task>/SKILL.md` as the source — that may already be personalized for someone else and is not authoritative.)
 2. For each `{{VARIABLE}}` token in the template, replace with its mapped value.
 3. For each `<!-- OPTIONAL:NAME -->...<!-- /OPTIONAL:NAME -->` block:
    - If `NAME` is in `{{OPTIONAL_SECTIONS}}` → keep the block, strip the comment markers.
    - Otherwise → remove the block entirely.
-4. Validate: grep the output for any remaining `{{` or `<!-- OPTIONAL` markers. Zero matches is the pass bar.
-5. Write back to `~/.claude/scheduled-tasks/<task>/SKILL.md`.
+   - **Process iteratively** until no `<!-- OPTIONAL` markers remain. Templates may nest blocks (e.g., `OPTIONAL:has_direct_reports` wrapping `OPTIONAL:asana`); the outer pass exposes the inner.
+4. Validate: grep the rendered output for any remaining `{{` or `<!-- OPTIONAL` markers. **Zero matches is the pass bar.** Any leftover `{{` token is a hard fail — fix the missing substitution before deploying. Reject `TODO` and empty placeholders specifically (these are not "intentional"; the validator should catch them).
+5. Decide deploy target per the policy below, then write.
+
+### Deploy policy (where the rendered SKILL.md lands)
+
+For each of `morning-brief` and `evening-wrap`:
+
+| Existing state at `~/.claude/scheduled-tasks/<task>/SKILL.md` | Action |
+|---|---|
+| File does not exist | **Write live.** Fresh install — this is the happy path for new adopters. |
+| File exists AND grep finds `{{` markers in it | **Back up + write live.** It's an unpersonalized template (likely from `install.sh` copying the `.template.md`). Backup name: `SKILL.md.backup-YYYYMMDD-HHMM`. |
+| File exists AND no `{{` markers found (already personalized) | **Prompt the user.** Three options: <br>• **Replace** — timestamped backup, then write rendered live. <br>• **Preview** — write rendered version to `{{VAULT_PATH}}/Scheduled Tasks Preview.md` (single file, both tasks under H1 sections). Live SKILL.md untouched. <br>• **Skip** — do nothing for this task. <br>Default for `--reset` flag is Replace; for `--update` flag is Replace with auto-backup; for first-run mode with personalization detected (rare), is Prompt. |
+
+Print which path was taken for each task so the user knows their live system state. Example:
+> `morning-brief: written live to ~/.claude/scheduled-tasks/morning-brief/SKILL.md (no prior personalization detected)`
+> `evening-wrap: existing personalization preserved; preview written to {{VAULT_PATH}}/Scheduled Tasks Preview.md`
 
 ## Files Generated (First-Run Mode)
 
@@ -352,9 +380,11 @@ Branch on the answer:
 - **A:** Re-ask Step 2; regenerate the `## Me` block of Memory.md and the role line of CLAUDE.md only.
 - **B:** Re-ask Step 3; regenerate the `## People` table.
 - **C:** Re-ask Step 5; regenerate the `## Projects` block.
-- **D:** Re-ask Step 6; reapply substitutions to morning/evening templates.
+- **D:** Re-ask Step 6; reapply substitutions to morning/evening templates per the deploy policy (Replace with auto-backup is the default in update mode).
 - **E:** Re-run the full interview, but show the user current values and let them edit
   selectively rather than re-typing.
+
+Update mode also re-asks the IC question from Step 3 if the user picks B or E (stakeholders changed → reports may have changed). `{{HAS_DIRECT_REPORTS}}` and `{{DELEGATION_*}}` are recomputed.
 
 In every case, **preserve content the user added outside the regenerated sections.** Use
 section markers (HTML comments like `<!-- BEGIN AUTO:PEOPLE -->...<!-- END AUTO:PEOPLE -->`)
@@ -390,15 +420,27 @@ You'll get your first morning brief at {{MORNING_TIME}} on the next scheduled da
 
 ## Integration QA
 
-Before printing the schedule commands, run:
+Before printing the schedule commands, run two greps against every file actually written this run (skip preview-only paths):
 
 ```bash
-grep -nE "\\{\\{[A-Z_]+\\}\\}" "{{VAULT_PATH}}/Memory.md" "{{VAULT_PATH}}/CLAUDE.md" \
+# 1. No remaining substitution placeholders.
+grep -nE "\\{\\{[A-Z_]+\\}\\}" \
+  "{{VAULT_PATH}}/Memory.md" "{{VAULT_PATH}}/CLAUDE.md" \
+  ~/.claude/scheduled-tasks/morning-brief/SKILL.md \
+  ~/.claude/scheduled-tasks/evening-wrap/SKILL.md
+
+# 2. No leftover OPTIONAL block markers.
+grep -nE "<!-- /?OPTIONAL:" \
+  ~/.claude/scheduled-tasks/morning-brief/SKILL.md \
+  ~/.claude/scheduled-tasks/evening-wrap/SKILL.md
+
+# 3. No TODO placeholders. Asana IDs especially.
+grep -nE "<TODO:" \
   ~/.claude/scheduled-tasks/morning-brief/SKILL.md \
   ~/.claude/scheduled-tasks/evening-wrap/SKILL.md
 ```
 
-Zero matches is the pass bar. If any `{{VARIABLE}}` slipped through, fix it before declaring done.
+**All three must return zero matches.** If any do, fix the underlying issue (missing substitution, nested OPTIONAL not stripped, or unfilled Asana ID) and re-render — do not declare success while placeholders remain.
 
 ## Rules
 
