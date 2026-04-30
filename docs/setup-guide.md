@@ -89,14 +89,46 @@ What it copies:
 
 ## Step 4 — Personalize
 
-Open Claude Code in your vault:
+### Choose how you'll run Claude in your vault
+
+Three options. Pick whichever fits your workflow — the rest of this guide assumes Option A but the commands work the same in all three.
+
+**Option A — Standard terminal (recommended for first-time setup)**
 
 ```bash
 cd <your-vault-path>
 claude
 ```
 
-Run:
+Simplest path; works anywhere Claude Code CLI is installed. The downside is that the terminal lives outside Obsidian, so you'll be switching windows.
+
+**Option B — Obsidian terminal (Claude inside your vault editor)**
+
+Install a terminal community plugin in Obsidian, then `cd` to the vault root (`.`) and run `claude` from inside Obsidian.
+
+1. Obsidian → Settings (`⌘,`) → Community plugins → Browse
+2. Search **"Terminal"** (the plugin by polyipseity is a common pick) and install + enable
+3. Open a new terminal pane: command palette (`⌘P`) → "Terminal: Open terminal"
+4. In the pane:
+   ```bash
+   claude
+   ```
+   (No `cd` needed — the plugin opens at the vault root by default.)
+
+Pro: never leave Obsidian; you can watch files appear in the file tree as the skills write them. Con: one more plugin to install and keep updated.
+
+**Option C — Cowork (web), pointed at your vault**
+
+If you'd rather not use a terminal at all, Cowork (Claude's web project mode) can target your vault folder directly. Setup depends on your environment:
+
+- **Claude Desktop with file-system access:** open Claude Desktop → create a new project → connect the project to your vault folder. Once connected, Cowork can read and write the vault the same way Claude Code can.
+- **Other Cowork setups:** the connection mechanism varies (some use a synced folder, some use a file-system MCP). Check the Cowork docs for your environment.
+
+Pro: native Anthropic UI; works from any device. Con: file-system connection is platform-dependent — confirm your Cowork setup can read AND write to the vault path before relying on it for daily use, or the morning brief won't be able to write today's note.
+
+### Run the personalization
+
+Once Claude is open in your vault (any of the three options above), run:
 
 ```
 /personalize-second-brain
