@@ -91,6 +91,38 @@ Paste the two commands from the personalization output, e.g.:
 
 Your first morning brief fires at the next scheduled time. Open today's daily note in Obsidian to read it.
 
+## Step 5 — (Optional) Seed your vault from existing Claude work
+
+If you already have months of Claude.ai conversations, Cowork project folders, or local notes that contain decisions, frameworks, or stakeholder context you want the system to know about, run the migration skill before your first morning brief. It turns past Claude work into structured PARA notes the morning brief can actually read.
+
+```
+/migrate-claude-project /absolute/path/to/old-project
+```
+
+(Or `cd` into the folder first and run `/migrate-claude-project` with no argument.)
+
+The skill works in three steps:
+
+1. **Inventory** — reads everything in the folder (files, code, `.claude/` conversation history if present), shows you what it found, asks for any missing context. Does not write yet.
+2. **Generate** — after you confirm, drafts one markdown note per logical unit of work. The project hub goes to `1 - Projects/`, frameworks and reference material go to `3 - Resources/`, anything ambiguous goes to `0 - Inbox/`. Every note gets PARA frontmatter, `[[full-name backlinks]]` per your CLAUDE.md vault rules, and a Related section. The skill writes in your voice (it reads your CLAUDE.md and Memory.md first to honor your writing rules).
+3. **Preview + write** — shows the planned filenames, folders, and link inventory. On your confirmation, writes the files directly.
+
+Re-runnable: each note is stamped with `source-folder: <path>` in frontmatter, so re-running on the same folder enters additive mode (only generate notes for files not yet imported) or refresh mode (back up + regenerate).
+
+You can run this once now to populate your vault, and again later for any other old project folder. Most adopters end up running it 3–10 times across their backlog.
+
+If you have no prior Claude work, skip this step. The morning brief still works on an empty vault — it just gets richer as you accumulate notes.
+
+## Step 6 — First morning brief
+
+Don't wait until tomorrow. Trigger your morning brief manually now to see it land:
+
+```
+/schedule run morning-brief
+```
+
+Open today's daily note in Obsidian (`Daily Notes/YYYY.MM.DD.md`). Read it. If it feels generic or off-tone, your personalization missed something — re-run `/personalize-second-brain --update` and pick the area that needs adjustment (B for stakeholders, C for projects, D for integrations, E for full re-edit).
+
 ## Re-running personalization
 
 The skill is re-runnable as your role, stakeholders, or integrations change.
