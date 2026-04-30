@@ -3,22 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Second Brain OS — Architecture</title>
+<title>Second Brain OS: Architecture</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5;padding:48px 24px;min-height:100vh}
+body{background:#eef2f7;color:#1e293b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5;padding:48px 24px;min-height:100vh}
 .page{max-width:1320px;margin:0 auto}
 
 /* Header */
 .hdr{text-align:center;margin-bottom:18px}
-.hdr h1{font-size:1.9rem;font-weight:700;letter-spacing:-.5px;color:#f8fafc;margin-bottom:6px}
-.hdr .tag{font-size:.84rem;color:#60a5fa;font-weight:600;letter-spacing:.4px;margin-bottom:10px}
-.hdr p{font-size:.88rem;color:#94a3b8;max-width:720px;margin:0 auto;line-height:1.6}
+.hdr .tag{font-size:2.2rem;color:#2563eb;font-weight:800;letter-spacing:-.5px;margin-bottom:14px;line-height:1.1}
+.hdr h1{font-size:1.25rem;font-weight:600;letter-spacing:-.2px;color:#0f172a;max-width:880px;margin:0 auto;line-height:1.45}
 
 /* TL;DR */
-.tldr{background:linear-gradient(90deg,rgba(59,130,246,.08),rgba(74,222,128,.06));border:1px solid #1e3a5f;border-radius:10px;padding:16px 22px;margin:26px 0 36px;font-size:.78rem;line-height:1.6;color:#cbd5e1}
-.tldr strong{color:#f1f5f9}
-.tldr .pill{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#60a5fa;margin-right:8px}
+.tldr{background:#f1f5fb;border:1px solid #94a3b8;border-left:3px solid #2563eb;box-shadow:0 1px 2px rgba(15,23,42,.05);border-radius:8px;padding:16px 22px;margin:26px 0 36px;font-size:.78rem;line-height:1.6;color:#334155}
+.tldr strong{color:#0f172a}
+.tldr .pill{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2563eb;margin-right:8px}
 
 /* Layer chrome */
 .layer{margin-bottom:28px}
@@ -32,32 +31,32 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 .g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
 .gx{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 
-.c{background:#1e293b;border-radius:9px;padding:14px 16px;border:1px solid #334155;transition:border-color .2s}
-.c:hover{border-color:#475569}
-.cn{font-size:.82rem;font-weight:600;color:#f1f5f9;margin-bottom:3px;display:flex;align-items:baseline;gap:6px}
+.c{background:#ffffff;border-radius:9px;padding:14px 16px;border:1px solid #94a3b8;box-shadow:0 1px 2px rgba(15,23,42,.05);transition:border-color .2s, box-shadow .2s}
+.c:hover{border-color:#64748b;box-shadow:0 2px 6px rgba(15,23,42,.09)}
+.cn{font-size:.82rem;font-weight:600;color:#0f172a;margin-bottom:3px;display:flex;align-items:baseline;gap:6px}
 .cn .t{font-size:.65rem;color:#64748b;font-weight:400}
-.cn .px{font-size:.55rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:#334155;color:#94a3b8;padding:2px 5px;border-radius:3px;margin-left:auto}
-.cd{font-size:.73rem;color:#94a3b8;line-height:1.5}
+.cn .px{font-size:.55rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:#e2e8f0;color:#475569;padding:2px 5px;border-radius:3px;margin-left:auto}
+.cd{font-size:.73rem;color:#475569;line-height:1.5}
 .cv{margin-top:6px;font-size:.68rem;font-weight:600;display:inline-block;padding:2px 7px;border-radius:4px}
-.ct{margin-top:5px;font-size:.65rem;color:#475569;line-height:1.4}
-.ct b{color:#4ade80;font-weight:600}
+.ct{margin-top:5px;font-size:.65rem;color:#64748b;line-height:1.4}
+.ct b{color:#16a34a;font-weight:600}
 .ex{color:#64748b;font-style:italic}
 
-/* Colors */
-.bl .ln{background:#1e3a5f;color:#60a5fa}.bl .lt{color:#60a5fa}.bl .cv{background:#172554;color:#60a5fa}
-.am .ln{background:#422006;color:#fbbf24}.am .lt{color:#fbbf24}.am .cv{background:#422006;color:#fbbf24}
-.gn .ln{background:#052e16;color:#4ade80}.gn .lt{color:#4ade80}.gn .cv{background:#052e16;color:#4ade80}
-.rd .ln{background:#450a0a;color:#f87171}.rd .lt{color:#f87171}.rd .cv{background:#450a0a;color:#f87171}
-.sl .ln{background:#1e293b;color:#94a3b8}.sl .lt{color:#94a3b8}
+/* Layer colors — light theme */
+.bl .ln{background:#dbeafe;color:#1d4ed8}.bl .lt{color:#1d4ed8}.bl .cv{background:#dbeafe;color:#1d4ed8}
+.am .ln{background:#fef3c7;color:#b45309}.am .lt{color:#b45309}.am .cv{background:#fef3c7;color:#b45309}
+.gn .ln{background:#dcfce7;color:#15803d}.gn .lt{color:#15803d}.gn .cv{background:#dcfce7;color:#15803d}
+.rd .ln{background:#fee2e2;color:#b91c1c}.rd .lt{color:#b91c1c}.rd .cv{background:#fee2e2;color:#b91c1c}
+.sl .ln{background:#e2e8f0;color:#475569}.sl .lt{color:#475569}
 
 /* Callout */
-.co{background:#1a1f3a;border-left:3px solid;padding:12px 18px;margin:16px 0 28px;border-radius:0 7px 7px 0;font-size:.73rem;color:#94a3b8;line-height:1.55}
-.co strong{color:#cbd5e1}
-.co.bl{border-left-color:#3b82f6}.co.am{border-left-color:#f59e0b}
+.co{background:#f8fafc;border-left:3px solid;padding:12px 18px;margin:16px 0 28px;border-radius:0 7px 7px 0;font-size:.73rem;color:#475569;line-height:1.55}
+.co strong{color:#0f172a}
+.co.bl{border-left-color:#2563eb}.co.am{border-left-color:#d97706}
 
 /* Workflows */
 .wfs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
-.wf{background:#1e293b;border-radius:11px;padding:22px;border:1px solid #334155}
+.wf{background:#ffffff;border-radius:11px;padding:22px;border:1px solid #94a3b8;box-shadow:0 1px 3px rgba(15,23,42,.06)}
 .wt{font-size:.73rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:3px}
 .wt .d{width:7px;height:7px;border-radius:50%;display:inline-block}
 .ws{font-size:.7rem;color:#64748b;margin-bottom:16px;font-style:italic}
@@ -65,57 +64,40 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 /* Timeline */
 .tr{display:grid;grid-template-columns:72px 1fr;gap:10px;margin-bottom:6px;align-items:start}
 .tt{font-size:.68rem;font-weight:600;color:#64748b;text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
-.te{font-size:.73rem;color:#cbd5e1;padding:4px 9px;border-radius:5px;background:rgba(255,255,255,.03);border-left:2px solid #334155}
-.te.s{border-left-color:#f59e0b}.te.i{border-left-color:#4ade80}
+.te{font-size:.73rem;color:#334155;padding:4px 9px;border-radius:5px;background:#f8fafc;border-left:2px solid #cbd5e1}
+.te.s{border-left-color:#d97706}.te.i{border-left-color:#16a34a}
 .te .tg{font-size:.6rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-left:5px}
-.te .tg.s{color:#fbbf24}.te .tg.i{color:#4ade80}
-.td{grid-column:1/-1;border-bottom:1px dashed #334155;margin:5px 0;position:relative;height:16px}
-.td span{position:absolute;left:50%;transform:translateX(-50%) translateY(-50%);top:50%;background:#1e293b;padding:0 8px;font-size:.65rem;color:#475569;font-style:italic;white-space:nowrap}
+.te .tg.s{color:#b45309}.te .tg.i{color:#15803d}
+.td{grid-column:1/-1;border-bottom:1px dashed #cbd5e1;margin:5px 0;position:relative;height:16px}
+.td span{position:absolute;left:50%;transform:translateX(-50%) translateY(-50%);top:50%;background:#ffffff;padding:0 8px;font-size:.65rem;color:#94a3b8;font-style:italic;white-space:nowrap}
 
 /* Flow */
 .fl{display:flex;align-items:stretch;gap:0}
 .fs{flex:1;text-align:center}
-.fn{font-size:.65rem;font-weight:700;opacity:.5;margin-bottom:3px}
-.fm{font-size:.75rem;font-weight:600;color:#f1f5f9;margin-bottom:2px}
+.fn{font-size:.65rem;font-weight:700;opacity:.4;margin-bottom:3px;color:#64748b}
+.fm{font-size:.75rem;font-weight:600;color:#0f172a;margin-bottom:2px}
 .fd{font-size:.65rem;color:#64748b;line-height:1.35;padding:0 3px}
-.fa{display:flex;align-items:center;justify-content:center;color:#475569;font-size:.9rem;flex-shrink:0;width:20px}
+.fa{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.9rem;flex-shrink:0;width:20px}
 
-.wc{margin-top:14px;font-size:.68rem;color:#64748b;text-align:center;line-height:1.45;border-top:1px solid #334155;padding-top:10px}
+.wc{margin-top:14px;font-size:.68rem;color:#64748b;text-align:center;line-height:1.45;border-top:1px solid #e2e8f0;padding-top:10px}
 
 /* Footer */
-.ft{margin-top:36px;padding:18px 22px;background:linear-gradient(90deg,rgba(59,130,246,.08),rgba(245,158,11,.08));border-radius:9px;border:1px solid #1e3a5f}
-.ft p{font-size:.73rem;color:#94a3b8;line-height:1.55}
-.ft strong{color:#cbd5e1}
-.ft a{color:#60a5fa;text-decoration:none}
+.ft{margin-top:36px;padding:18px 22px;background:linear-gradient(90deg,rgba(37,99,235,.06),rgba(217,119,6,.06));border-radius:9px;border:1px solid #94a3b8;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.ft p{font-size:.73rem;color:#475569;line-height:1.55}
+.ft strong{color:#0f172a}
+.ft a{color:#2563eb;text-decoration:none;font-weight:600}
 .ft a:hover{text-decoration:underline}
 
 @media(max-width:900px){.g5,.g4{grid-template-columns:repeat(2,1fr)}.wfs{grid-template-columns:1fr}.fl{flex-direction:column}.fa{transform:rotate(90deg);width:auto;height:16px}}
 
-/* Print */
+/* Print: keep light, drop hover, kill background gradient for ink savings, control page breaks */
 @media print {
-  body { background: #fff; color: #0f172a; padding: 16px; }
-  .hdr h1 { color: #0f172a; }
-  .hdr .tag { color: #2563eb; }
-  .hdr p { color: #475569; }
-  .tldr { background: #f8fafc; border-color: #cbd5e1; color: #334155; }
-  .tldr strong { color: #0f172a; }
-  .lt { color: inherit !important; }
-  .lc { color: #64748b; }
-  .c { background: #fff; border-color: #cbd5e1; break-inside: avoid; page-break-inside: avoid; }
-  .c:hover { border-color: #cbd5e1; }
-  .cn { color: #0f172a; }
-  .cd, .ct { color: #475569; }
-  .cn .px { background: #e2e8f0; color: #475569; }
-  .co { background: #f8fafc; color: #475569; }
-  .co strong { color: #0f172a; }
-  .wf { background: #fff; border-color: #cbd5e1; break-inside: avoid; page-break-inside: avoid; }
-  .te { color: #334155; background: #f8fafc; }
-  .fm { color: #0f172a; }
-  .fd { color: #475569; }
-  .ft { background: #f8fafc; border-color: #cbd5e1; }
-  .ft p { color: #475569; }
-  .ft strong { color: #0f172a; }
-  .layer { page-break-inside: avoid; }
+  body { background: #fff; padding: 16px; }
+  .c { box-shadow: none; border-color: #64748b; }
+  .c:hover { border-color: #64748b; box-shadow: none; }
+  .wf, .ft, .tldr { box-shadow: none; border-color: #64748b; }
+  .ft { background: #f8fafc; }
+  .layer, .wf, .c { page-break-inside: avoid; break-inside: avoid; }
   .wfs { page-break-before: auto; }
 }
 </style>
@@ -125,8 +107,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 
 <div class="hdr">
     <div class="tag">SECOND BRAIN OS</div>
-    <h1>An AI-native operating system for strategic knowledge work</h1>
-    <p>A persistent context layer that makes every session, every decision, and every delegation more informed than the last.</p>
+    <h1>Persistent memory. Real context. AI that knows your work, your people, and your priorities.</h1>
 </div>
 
 <div class="tldr">
@@ -135,7 +116,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- ═══ 1. PERSISTENT KNOWLEDGE ═══ -->
 <div class="layer bl">
-    <div class="lh"><div class="ln">1</div><div class="lt">Persistent Knowledge</div><div class="lc">What the system knows — and remembers between sessions</div></div>
+    <div class="lh"><div class="ln">1</div><div class="lt">Persistent Knowledge</div><div class="lc">What the system knows, and remembers between sessions</div></div>
     <div class="g g5">
         <div class="c">
             <div class="cn">PARA Vault</div>
@@ -144,7 +125,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
         </div>
         <div class="c">
             <div class="cn">Active Priorities</div>
-            <div class="cd">Manual strategic list. This Week / Ongoing / Watching. <strong style="color:#fbbf24;">Authoritative</strong> — Morning Brief reads this first.</div>
+            <div class="cd">Manual strategic list. This Week / Ongoing / Watching. <strong style="color:#b45309;">Authoritative.</strong> Morning Brief reads this first.</div>
             <div class="cv bl">Strategic focus survives noisy days</div>
         </div>
         <div class="c">
@@ -159,38 +140,38 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
         </div>
         <div class="c">
             <div class="cn">TASKS.md</div>
-            <div class="cd">Tactical next-actions. Maps up to Active Priorities — bridges "what matters" and "what to do about it."</div>
+            <div class="cd">Tactical next-actions. Maps up to Active Priorities. Bridges "what matters" and "what to do about it."</div>
             <div class="cv bl">Decisions become tracked work</div>
         </div>
     </div>
-    <div class="co bl"><strong>Why plain text.</strong> Markdown is the most AI-accessible format. The agent reads and writes files directly — zero infrastructure between model and memory. No vendor lock-in. Works with or without AI.</div>
+    <div class="co bl"><strong>Why plain text.</strong> Markdown is the most AI-accessible format. The agent reads and writes files directly, with zero infrastructure between model and memory. No vendor lock-in. Works with or without AI.</div>
 </div>
 
 <!-- ═══ 2. SCHEDULED BACKBONE ═══ -->
 <div class="layer am">
-    <div class="lh"><div class="ln">2</div><div class="lt">Scheduled Backbone</div><div class="lc">Runs without you — gathers, synthesizes, writes the daily note before you sit down</div></div>
+    <div class="lh"><div class="ln">2</div><div class="lt">Scheduled Backbone</div><div class="lc">Runs without you. Gathers, synthesizes, writes the daily note before you sit down.</div></div>
     <div class="g g2">
         <div class="c">
             <div class="cn">Morning Brief <span class="t">default 6:45 AM</span></div>
-            <div class="cd">Reads Active Priorities → Calendar → Slack → Gmail (3-tier) → Drive → Notion → Asana. Writes two altitudes: <strong style="color:#e2e8f0;">Strategic Landscape</strong> (focus / stalled / noise) + <strong style="color:#e2e8f0;">Ops Sweep</strong> (respond / delegate / kill). Includes rotating Daily Challenge.</div>
+            <div class="cd">Reads Active Priorities → Calendar → Slack → Gmail (3-tier) → Drive → Notion → Asana. Writes two altitudes: <strong style="color:#0f172a;">Strategic Landscape</strong> (focus / stalled / noise) + <strong style="color:#0f172a;">Ops Sweep</strong> (respond / delegate / kill). Includes rotating Daily Challenge.</div>
             <div class="cv am">You sit down to a briefing, not an inbox</div>
         </div>
         <div class="c">
             <div class="cn">Evening Wrap <span class="t">default 5:05 PM</span></div>
-            <div class="cd">Reads today's daily note + computes TASKS.md delta (checkbox flips = completion signal). Writes <strong style="color:#e2e8f0;">Leverage Assessment</strong>, <strong style="color:#e2e8f0;">Carry Forward</strong> (tagged handoff), <strong style="color:#e2e8f0;">Tomorrow's One Thing</strong>, optional weekly <strong style="color:#e2e8f0;">Thread</strong>.</div>
+            <div class="cd">Reads today's daily note and TASKS.md. Tracks what got done, what slipped, what's still open. Writes <strong style="color:#0f172a;">Leverage Assessment</strong>, <strong style="color:#0f172a;">Carry Forward</strong> (tagged handoff), <strong style="color:#0f172a;">Tomorrow's One Thing</strong>, optional weekly <strong style="color:#0f172a;">Thread</strong>.</div>
             <div class="cv am">Honest accountability + clean handoff</div>
         </div>
     </div>
-    <div class="co am"><strong>The separation principle.</strong> Scheduled tasks gather and prepare. They never decide — they surface what needs deciding. The system works even when you don't open a session.</div>
+    <div class="co am"><strong>The separation principle.</strong> Scheduled tasks gather and prepare. They never decide. They surface what needs deciding. The system works even when you don't open a session.</div>
 </div>
 
 <!-- ═══ 3. INTERACTIVE SKILLS ═══ -->
 <div class="layer gn">
-    <div class="lh"><div class="ln">3</div><div class="lt">Interactive Skills</div><div class="lc">Human-in-the-loop — where you make decisions, not the system</div></div>
+    <div class="lh"><div class="ln">3</div><div class="lt">Interactive Skills</div><div class="lc">Human-in-the-loop. Decisions stay with you.</div></div>
     <div class="g g4">
         <div class="c">
             <div class="cn">Personalize <span class="px">setup</span></div>
-            <div class="cd">One-time interview. Picks your motion (strategic / coordinator / executor) from a vignette. Generates Memory.md, CLAUDE.md, and applies substitutions to your scheduled-task templates.</div>
+            <div class="cd">One-time interview. Picks your motion (strategic / coordinator / executor) from a vignette. Generates Memory.md and CLAUDE.md, then fills in the variables in your scheduled-task templates.</div>
             <div class="cv gn">The package becomes your own in 15 minutes</div>
             <div class="ct"><b>Triggers:</b> "/personalize-second-brain" · "set up my second brain"</div>
         </div>
@@ -208,7 +189,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
         </div>
         <div class="c">
             <div class="cn">Vault Capture</div>
-            <div class="cd">Quick capture, session wrap-up, or suggested. <span class="ex">"That three-bucket model is worth a note — want me to save it?"</span></div>
+            <div class="cd">Quick capture, session wrap-up, or suggested. <span class="ex">"That three-bucket model is worth a note. Want me to save it?"</span></div>
             <div class="cv gn">Nothing valuable stays in a conversation</div>
             <div class="ct"><b>Triggers:</b> "capture this" · "save to vault" · "what should I capture" · proactive when frameworks emerge</div>
         </div>
@@ -226,15 +207,15 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
         </div>
         <div class="c">
             <div class="cn">Thinking Partner</div>
-            <div class="cd">Mental-model engine. First principles, inversion, pre-mortem, second-order thinking — matched to the situation. Detects exploring vs. defending.</div>
+            <div class="cd">Mental-model engine. First principles, inversion, pre-mortem, second-order thinking. Each matched to the situation. Detects exploring vs. defending.</div>
             <div class="cv gn">Structured reasoning when stakes are high</div>
             <div class="ct"><b>Triggers:</b> "help me think through" · "what am I missing" · naming any model · appears stuck</div>
         </div>
         <div class="c">
             <div class="cn">Thinking Orchestrator <span class="px">pattern</span></div>
-            <div class="cd">Stakeholder-lens orchestration — bring perspectives you wouldn't naturally apply. Anti-reinforcement guards. <span class="ex">Documented in customization-guide; build your own using your stakeholders.</span></div>
+            <div class="cd">Stakeholder-lens orchestration. Brings perspectives you wouldn't naturally apply. Anti-reinforcement guards. <span class="ex">Documented in customization-guide; build your own using your stakeholders.</span></div>
             <div class="cv gn">Pressure-tested from every angle</div>
-            <div class="ct"><b>Status:</b> reference pattern, not shipped — extension point for personalization</div>
+            <div class="ct"><b>Status:</b> reference pattern, not yet shipped. Extension point for personalization.</div>
         </div>
     </div>
 </div>
@@ -244,7 +225,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
     <div class="lh"><div class="ln">4</div><div class="lt">Agent + Interface</div><div class="lc">The model, the connectors, and how you interact with it</div></div>
     <div class="g g4">
         <div class="c"><div class="cn">Claude <span class="t">Opus / Sonnet</span></div><div class="cd">Full vault read/write. Opus for strategy + synthesis. Sonnet for speed + batch processing.</div></div>
-        <div class="c"><div class="cn">MCP Connectors</div><div class="cd">Model Context Protocol → external systems. Structured APIs, not scraping.</div></div>
+        <div class="c"><div class="cn">MCP Connectors</div><div class="cd">Model Context Protocol. Structured API access to external systems.</div></div>
         <div class="c"><div class="cn">Claude Code CLI</div><div class="cd">Primary interface. Mounted to vault via Obsidian terminal. Where most work happens.</div></div>
         <div class="c"><div class="cn">Cowork</div><div class="cd">Web/desktop interface. Slides, docs, dashboards. Same skills, different surface.</div></div>
     </div>
@@ -252,7 +233,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- ═══ 5. EXTERNAL SYSTEMS ═══ -->
 <div class="layer rd">
-    <div class="lh"><div class="ln">5</div><div class="lt">Connected Systems</div><div class="lc">Where the work lives — the vault connects to all of it</div></div>
+    <div class="lh"><div class="ln">5</div><div class="lt">Connected Systems</div><div class="lc">Where the work lives. The vault connects to all of it.</div></div>
     <div class="g gx">
         <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Krisp</div><div class="cd" style="font-size:.63rem">Required · transcripts</div></div>
         <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Slack</div><div class="cd" style="font-size:.63rem">Optional · messages</div></div>
@@ -261,26 +242,26 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
         <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Asana</div><div class="cd" style="font-size:.63rem">Optional · tasks</div></div>
         <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Google Drive</div><div class="cd" style="font-size:.63rem">Optional · docs</div></div>
         <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Notion</div><div class="cd" style="font-size:.63rem">Optional · wiki</div></div>
-        <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Web + APIs</div><div class="cd" style="font-size:.63rem">Research</div></div>
+        <div class="c" style="padding:10px 12px;text-align:center"><div class="cn" style="font-size:.75rem;justify-content:center">Web + APIs</div><div class="cd" style="font-size:.63rem">Optional · research</div></div>
     </div>
 </div>
 
 <!-- ═══ WORKFLOWS ═══ -->
 <div class="wfs">
     <div class="wf">
-        <div class="wt" style="color:#60a5fa"><span class="d" style="background:#3b82f6"></span>Daily Context Cycle</div>
+        <div class="wt" style="color:#1d4ed8"><span class="d" style="background:#2563eb"></span>Daily Context Cycle</div>
         <div class="ws">Scheduled tasks gather. Interactive skills decide. Each day feeds the next.</div>
         <div class="tr"><div class="tt">6:45 AM</div><div class="te s"><strong>Morning Brief</strong> → writes today's daily note <span class="tg s">scheduled</span></div></div>
         <div class="td"><span>you open a session</span></div>
-        <div class="tr"><div class="tt" style="color:#4ade80">on demand</div><div class="te i"><strong>Session Context</strong> → reads brief, presents state <span class="tg i">interactive</span></div></div>
-        <div class="tr"><div class="tt" style="color:#4ade80">as needed</div><div class="te i">Work: tasks, capture, thinking, sanity-check <span class="tg i">interactive</span></div></div>
+        <div class="tr"><div class="tt" style="color:#15803d">on demand</div><div class="te i"><strong>Session Context</strong> → reads brief, presents state <span class="tg i">interactive</span></div></div>
+        <div class="tr"><div class="tt" style="color:#15803d">as needed</div><div class="te i">Work: tasks, capture, thinking, sanity-check <span class="tg i">interactive</span></div></div>
         <div class="td"><span>day winds down</span></div>
         <div class="tr"><div class="tt">5:05 PM</div><div class="te s"><strong>Evening Wrap</strong> → reflection + write-back to TASKS.md <span class="tg s">scheduled</span></div></div>
         <div class="wc">Morning Brief reads yesterday's carry-forward. Evening Wrap creates tomorrow's. The loop compounds.</div>
     </div>
     <div class="wf">
-        <div class="wt" style="color:#f87171"><span class="d" style="background:#ef4444"></span>Thinking &amp; Verification Pipeline</div>
-        <div class="ws">The system challenges you, not just assists you. No echo chambers.</div>
+        <div class="wt" style="color:#b91c1c"><span class="d" style="background:#dc2626"></span>Thinking &amp; Verification Pipeline</div>
+        <div class="ws">Pressure-tests your claims and your thinking. No echo chambers.</div>
         <div class="fl">
             <div class="fs"><div class="fn">01</div><div class="fm">Frame</div><div class="fd">Thinking Partner selects the right mental model for the situation</div></div>
             <div class="fa">→</div>
@@ -296,7 +277,7 @@ body{background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- Footer -->
 <div class="ft">
-    <p><strong>This is the individual layer.</strong> One person, one vault, one agent. At enterprise scale: shared knowledge layers, role-based access, agent audit trails, managed deployment. The individual vault becomes a node in a larger network. The unsolved problem isn't the architecture — it's multi-person orchestration with governance. <strong>Install:</strong> <a href="../README.md">README</a> · <strong>Setup:</strong> <a href="../docs/setup-guide.md">Setup Guide</a></p>
+    <p><strong>This is the individual layer.</strong> One person, one vault, one agent. At enterprise scale: shared knowledge layers, role-based access, agent audit trails, managed deployment. The individual vault becomes a node in a larger network. Architecture is solved. Multi-person orchestration with governance is the unsolved problem. <strong>Install:</strong> <a href="../README.md">README</a> · <strong>Setup:</strong> <a href="../docs/setup-guide.md">Setup Guide</a></p>
 </div>
 
 </div>
