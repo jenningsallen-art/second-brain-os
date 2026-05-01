@@ -65,7 +65,7 @@ Vault is ready. Move to Step 2.
 ## Step 2 — Clone the repo
 
 ```bash
-git clone https://github.com/<your-handle>/second-brain-os.git
+git clone https://github.com/jenningsallen-art/second-brain-os.git
 cd second-brain-os
 ```
 

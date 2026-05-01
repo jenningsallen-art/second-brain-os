@@ -13,8 +13,9 @@ If you are reading this and not on the early-access list, you are early. Welcome
 ## What's in the package
 
 - **`install.sh`** — interactive installer. Copies skills into your Claude config, copies scheduled-task templates, seeds your vault from `vault-template/`. Refuses to clobber an existing personalized install without your explicit consent. Detects Krisp MCP and the Obsidian Tasks + Dataview plugins; warns if missing.
-- **`skills/`** — 7 portable Claude skills:
+- **`skills/`** — 8 portable Claude skills:
   - `personalize-second-brain` — interviews you once, picks your motion (strategic / coordinator / executor) from a vignette, generates Memory.md and CLAUDE.md, and applies substitutions to your scheduled-task templates. Re-runnable with `--update` (preserves your edits) or `--reset` (backs up and regenerates).
+  - `migrate-claude-project` — seeds your vault from existing Claude.ai project folders, Cowork project directories, or any folder of past Claude work. Three-step interactive flow (inventory → confirm → write); files into PARA folders with frontmatter and backlinks per your CLAUDE.md vault rules. Re-runnable across multiple folders.
   - `session-context` — 60-second session startup. Reads today's Morning Brief and presents state.
   - `tactical-tasks` — three-altitude task management: Active Priorities (strategic) → TASKS.md (tactical) → Tasks Dashboard (live view).
   - `vault-capture` — capture decisions, frameworks, insights as PARA-filed Obsidian notes with proper frontmatter and backlinks.
@@ -29,7 +30,7 @@ If you are reading this and not on the early-access list, you are early. Welcome
 ## Quick start
 
 ```bash
-git clone https://github.com/<your-handle>/second-brain-os.git
+git clone https://github.com/jenningsallen-art/second-brain-os.git
 cd second-brain-os
 ./install.sh
 # In Claude Code, cd to your vault and run:
