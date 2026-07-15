@@ -68,6 +68,22 @@ Optional fields used by the vault system:
 - `session-context: "Brief description of the session/conversation that produced this note"`
 - `source: manual | claude-capture | meeting-digest`
 
+### Project Changelogs (`log.md`)
+
+Multi-session projects with a hub doc and workstream files get an append-only `log.md` alongside the hub. Adapted from Google's Open Knowledge Format (OKF v0.1) convention:
+
+- **Newest entries first**, grouped under `## YYYY-MM-DD` date headings
+- Each bullet leads with a bolded tag: **Build**, **Decision**, **Fix**, or **Update**
+- One line per entry, the "what changed," not the reasoning. Reasoning stays in the hub doc or a decision record; the log is the fast scan, not the source of truth
+- Only start a `log.md` when a project has enough session-to-session churn to warrant one (multiple active workstreams, recurring builds/decisions). A single-session capture doesn't need one, don't create it preemptively
+
+Example:
+```
+## 2026-07-15
+- **Decision**: switched the retrieval backend to hybrid search
+- **Build**: eval suite passing 8/8
+```
+
 ---
 
 ## Three Capture Modes
