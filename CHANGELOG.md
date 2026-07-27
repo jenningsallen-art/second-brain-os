@@ -51,8 +51,6 @@ defect that showed up in practice, not a speculative improvement.
   invisible. Style rules come from your `Memory.md`, so it writes in your voice, not the
   author's.
 
-- **`vault-capture`: project changelogs.** An append-only `log.md` convention for projects
-  with enough session-to-session churn that the hub doc stops reading as current state.
 
 ### Fixed
 
