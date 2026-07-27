@@ -48,6 +48,8 @@ Until personalization, all skills trigger on their canonical phrases (see each s
 - `vault-cleanup` — weekly maintenance: dedupe, fix backlinks, archive routine notes
 - `sanity-check` — claim audits and assumption testing
 - `thinking-partner` — strategic decisions, framework application, "help me think through X"
+- `distill` — on "distill this" / "help me write" / turning notes into a memo, message, or position
+- `closeout` — at session end, on "closeout" / "close out this session"
 
 The Morning Brief and Evening Wrap are scheduled tasks (not skills); set them up via `/schedule create morning-brief <time>` and `/schedule create evening-wrap <time>` after running `/personalize-second-brain`.
 
