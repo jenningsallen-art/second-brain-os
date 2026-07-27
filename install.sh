@@ -197,13 +197,42 @@ fi
 INSTALLED=0
 SKIPPED=0
 
+UPDATED=0
+
+# Note on the copy form below: the loop glob yields a trailing slash on $skill_path, and
+# `cp -R src/ target` copies the CONTENTS of src into target. Without that trailing slash,
+# `cp -R src target` on an existing target produces target/src — a nested
+# skills/<name>/<name>/SKILL.md that Claude silently fails to load. Keep the trailing slash.
 for skill_path in "$REPO_ROOT"/skills/*/; do
   skill_name="$(basename "$skill_path")"
   target="$SKILLS_DIR/$skill_name"
 
   if [[ -d "$target" ]]; then
-    warn "Skill already exists, skipping: $skill_name (delete it first to reinstall)"
-    SKIPPED=$((SKIPPED + 1))
+    if diff -rq "$skill_path" "$target" >/dev/null 2>&1; then
+      SKIPPED=$((SKIPPED + 1))
+      continue
+    fi
+
+    # Differs from the shipped version: either the user edited it, or it predates an update.
+    # Skipping silently is how installs drift permanently out of date, so ask.
+    warn "Skill differs from the packaged version: $skill_name"
+    diff -rq "$skill_path" "$target" 2>/dev/null | sed 's/^/      /' | head -5
+    read -r -p "      [u] update (your copy is backed up) · [k] keep yours · [d] show diff: " choice
+    if [[ "$choice" == "d" ]]; then
+      diff -ru "$target" "$skill_path" | head -60
+      read -r -p "      [u] update · [k] keep yours: " choice
+    fi
+    if [[ "$choice" != "u" ]]; then
+      info "Kept your version: $skill_name"
+      SKIPPED=$((SKIPPED + 1))
+      continue
+    fi
+
+    backup="$target.backup-$(date +%Y%m%d-%H%M%S)"
+    mv "$target" "$backup"
+    cp -R "$skill_path" "$target"
+    ok "Updated skill: $skill_name $(dim "(your copy: $(basename "$backup"))")"
+    UPDATED=$((UPDATED + 1))
     continue
   fi
 
@@ -212,7 +241,7 @@ for skill_path in "$REPO_ROOT"/skills/*/; do
   INSTALLED=$((INSTALLED + 1))
 done
 
-info "$(dim "Installed: $INSTALLED · Skipped: $SKIPPED")"
+info "$(dim "Installed: $INSTALLED · Updated: $UPDATED · Skipped: $SKIPPED")"
 
 # --- step 3: install scheduled-task templates (if present) --------------------
 

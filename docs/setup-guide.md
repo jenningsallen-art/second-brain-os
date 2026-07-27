@@ -36,6 +36,7 @@ When Obsidian first opens, choose **Create new vault**.
 - **Vault location:** Put it somewhere shallow and visible. **`~/Desktop/Second Brain` is the recommended default.** A vault on your Desktop is a daily visible reminder that this system exists, and the short path keeps Claude Code commands clean.
   - **Avoid:** burying the vault deep in subdirectory chains (`~/Documents/Work/2026/Tools/Second Brain` is too deep — long paths break shell quoting and make the vault feel hidden).
   - **Avoid:** OneDrive, Dropbox, or iCloud-managed folders unless you've tested that Claude Code can read/write through them reliably. Sync conflicts can corrupt vault state.
+  - **Using more than one computer?** A synced vault is how your notes follow you, but your skills and Claude's memory stay behind on each machine by default. Get the vault working on one machine first, then see [`multi-machine.md`](multi-machine.md).
 
 Click **Create**. Obsidian seeds an empty vault and opens it.
 

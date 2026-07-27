@@ -19,12 +19,12 @@ If you are reading this and not on the early-access list, you are early. Welcome
   - `session-context` — 60-second session startup. Reads today's Morning Brief and presents state.
   - `tactical-tasks` — three-altitude task management: Active Priorities (strategic) → TASKS.md (tactical) → Tasks Dashboard (live view).
   - `vault-capture` — capture decisions, frameworks, insights as PARA-filed Obsidian notes with proper frontmatter and backlinks.
-  - `vault-cleanup` — weekly maintenance. Ten checks: dedup, broken backlinks, naming consistency, archival, debris. Always reports before fixing.
+  - `vault-cleanup` — weekly maintenance. Eleven checks: dedup, broken backlinks, naming consistency, archival, debris, and the health of Claude's own auto-memory. Always reports before fixing.
   - `sanity-check` — confirmation-bias detector. Audits claims against vault evidence + external data.
   - `thinking-partner` — mental-model engine. Catalog of 150+ models, applied based on situation type and orientation.
 - **`scheduled-tasks/`** — `morning-brief.template.md` and `evening-wrap.template.md`. Two-altitude morning brief (~7 min read) and synthesis-only evening reflection (~4 min read). All `{{VARIABLES}}` resolve at personalization time; unselected integration sections strip cleanly.
 - **`vault-template/`** — PARA folder structure plus starter `CLAUDE.md`, `Memory.md`, `TASKS.md`, `Tasks Dashboard.md`, and `Active Priorities.md`. Functional on day one; personalization regenerates CLAUDE.md and Memory.md with your real values.
-- **`docs/`** — six guides: `setup-guide.md`, `krisp-setup.md`, `scheduling-guide.md`, `customization-guide.md`, `motion-explained.md`, `troubleshooting.md`.
+- **`docs/`** — seven guides: `setup-guide.md`, `krisp-setup.md`, `scheduling-guide.md`, `customization-guide.md`, `motion-explained.md`, `multi-machine.md`, `troubleshooting.md`.
 - **`architecture/`** — `second-brain-os.html`. Five-layer architecture reference with print stylesheet. Open in a browser → File → Print → Save as PDF for a clean letter-size export.
 
 ## Quick start

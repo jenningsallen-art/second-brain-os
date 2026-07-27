@@ -259,6 +259,131 @@ preserving. But always confirm before deleting.
 
 ---
 
+### 11. Claude Memory Health
+
+Claude Code keeps its own auto-memory: an index plus one file per remembered fact. By default it
+lives at `~/.claude/projects/<munged-vault-path>/memory/`, outside the vault, invisible to Obsidian
+and to every other check in this skill. If you have moved it into the vault for portability (see
+`docs/multi-machine.md`), it lives at `5 - Meta/claude-memory/` and is reached through a symlink.
+
+Either way, audit it here. Nothing else does.
+
+**This is a different thing from `Memory.md` in the vault root.** `Memory.md` is the hand-written
+context file you personalize once. Claude's auto-memory is written automatically, one file per fact,
+and grows on its own. Two things named "memory," and confusing them wastes a lot of time. If your
+`CLAUDE.md` points at either, say which.
+
+**Two link namespaces share one `[[...]]` syntax. Do not collapse them.**
+
+| Form | Example | Means | Action |
+|------|---------|-------|--------|
+| kebab slug | `[[project-website-redesign]]` | another memory (its `name:`) | must resolve |
+| Title Case / spaces | `[[Jordan Rivera]]`, `[[Q3 Strategy — Canonical]]` | a vault note | correct as written, never rewrite |
+| bare common noun | `[[backlinks]]`, `[[wikilinks]]` | prose using link syntax as illustration | leave alone |
+
+The canary case: a memory whose *subject* is how to refer to a person will legitimately contain
+several vault-style links to that person, including alias forms it exists to prohibit. A memory
+recording "always write a colleague's full name, never their nickname" may contain
+`[[Jordan Rivera]]`, `[[Jordan Rivera|Jordan]]`, and `[[Jordan Rivera|JR]]` on purpose. If a cleanup
+pass flags or rewrites those, the pass is broken. Fix the pass, not the file.
+
+**Run the audit** (adjust the path if your memory is not in the vault):
+
+```bash
+cd "<vault>/5 - Meta/claude-memory" && python3 - << 'PY'
+import glob,re,os
+files=[f for f in sorted(glob.glob("*.md")) if f!="MEMORY.md"]
+slugs={f[:-3].replace("_","-"):f for f in files}
+idx=open("MEMORY.md").read(); linked=set(re.findall(r'\]\(([^)]+\.md)\)',idx))
+ILLUS={"backlinks","wikilinks"}
+print(f"{len(files)} memories, {len(linked)} index lines")
+print("unindexed :", [f for f in files if f not in linked] or "none")
+print("orphan idx:", [l for l in linked if not os.path.exists(l)] or "none")
+bad=[]; broken=[]; vaultns=0
+for f in files:
+    t=open(f).read()
+    if not re.search(r'^name:\s*'+re.escape(f[:-3].replace("_","-"))+r'\s*$',t,re.M):
+        bad.append(f)
+    for l in re.findall(r'\[\[([^\]]+)\]\]',t):
+        b=l.split("|")[0]
+        if b in slugs or b in ILLUS: continue
+        if re.fullmatch(r'[a-z0-9_-]+',b): broken.append((l,f))
+        else: vaultns+=1
+print("name: != filename slug:", bad or "none")
+print(f"vault-note links (fine): {vaultns}")
+print("BROKEN memory links:", broken or "none")
+PY
+```
+
+**What each result means:**
+
+- **unindexed / orphan idx** — the index must have exactly one line per file. Auto-fix: add or remove
+  the line. Safe.
+- **`name:` != filename slug** — the canonical name is the filename with `_` replaced by `-`. Anything
+  else silently breaks every inbound link. This is the single highest-value check in the section: when
+  these drift apart the whole link graph dies quietly and nothing reports an error. Auto-fix. Safe.
+- **BROKEN memory links** — a kebab link with no matching memory. Three causes, in order of frequency:
+  the type prefix was dropped (`[[website-redesign]]` for `[[project-website-redesign]]`); it is a
+  **vault note written in slug form** (`[[q3-planning]]` for the note `Q3 Planning.md`), so search the
+  vault by title before calling it dead; or it names a skill rather than a memory, in which case
+  de-link it to backticks. Report, don't guess.
+- **vault-note links** — check they resolve to a real note. `[[TASKS.md]]` is wrong; Obsidian links
+  drop the extension. A link to a note that does not exist yet is valid by convention and marks
+  something worth writing, so report those separately from malformed ones rather than "fixing" them.
+
+**Second pass, vault-side resolution** (the check above only proves a link is *shaped* like a vault link):
+
+```bash
+cd "<vault>/5 - Meta/claude-memory" && python3 - << 'PY'
+import glob,re,os
+V=os.path.abspath("../..")
+notes={os.path.splitext(f)[0] for r,d,fs in os.walk(V)
+       if "5 - Meta" not in r and "/." not in r for f in fs if f.endswith(".md")}
+files=[f for f in sorted(glob.glob("*.md")) if f!="MEMORY.md"]
+slugs={f[:-3].replace("_","-") for f in files}
+miss=set()
+for f in files:
+    for l in re.findall(r'\[\[([^\]]+)\]\]',open(f).read()):
+        b=l.split("|")[0]
+        if b in slugs or b in {"backlinks","wikilinks"} or re.fullmatch(r'[a-z0-9_-]+',b): continue
+        if b not in notes: miss.add((b,f))
+print("vault links with no matching note:", sorted(miss) or "none")
+PY
+```
+
+**Then apply judgment the script can't:**
+
+1. **Duplicate facts.** Two memories stating the same rule in different words, often written months
+   apart in different sessions. Look for near-identical `description:` lines. Merge into the file the
+   index already points at; retire the other.
+2. **Stale project memories.** A `type: project` memory whose project has shipped, been cancelled, or
+   whose named date has passed. Memories are point-in-time, but one describing a finished project as
+   "Active" actively misleads. Check dates in the body against today. Propose an update or retirement.
+3. **Contradictions.** Two memories giving conflicting guidance. Surface both, let the user pick.
+4. **Context tax.** The memory index loads in full every session. If it passes ~60 lines, propose
+   retiring the least-used entries rather than letting it grow silently.
+
+**Symlink check**, if memory or skills are symlinked into the vault:
+
+```bash
+for p in "<vault>/.claude/skills" ~/.claude/projects/*/memory; do
+  [ -e "$p" ] || echo "DANGLING: $p"
+done
+```
+
+A dangling link means skills or memory silently stopped loading. Nothing errors; it just goes quiet.
+This is the failure mode to watch for after moving a vault, renaming a folder, or a paused sync.
+
+**Never** copy memory files to a second location to "back them up." One real copy, symlinks
+everywhere else. Duplicated copies drift, and drift is the failure this structure exists to prevent.
+
+**Expect drift on every write.** New memories are written automatically, mid-session, by a process
+that does not run this audit. In practice a fresh batch of memories arrives with a mix of link forms
+and occasionally a `name:` that does not match its filename. That is not a sign anything is broken;
+it is why this section is a recurring check rather than a one-time migration.
+
+---
+
 ## Output Format
 
 Present findings as a structured cleanup report:
@@ -293,6 +418,12 @@ Present findings as a structured cleanup report:
 
 ### Debris
 [Files to delete]
+
+### Claude Memory
+- Index: [N] memories, [N] index lines, [unindexed/orphan counts]
+- Link graph: [N] resolving, [N] broken, [N] vault-note links (fine)
+- Duplicates / stale / contradictions: [list with recommendation]
+- Symlinks: [OK, or which are dangling]
 
 ### Recommended Actions
 1. [Specific action with file names]
