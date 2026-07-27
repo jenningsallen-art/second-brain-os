@@ -10,21 +10,25 @@ v1, early access. Coached install sessions available. Self-serve install is the 
 
 If you are reading this and not on the early-access list, you are early. Welcome.
 
+**Already installed?** See [CHANGELOG.md](CHANGELOG.md) for what's new and whether it's worth pulling. Re-running `./install.sh` now updates existing skills instead of skipping them.
+
 ## What's in the package
 
 - **`install.sh`** — interactive installer. Copies skills into your Claude config, copies scheduled-task templates, seeds your vault from `vault-template/`. Refuses to clobber an existing personalized install without your explicit consent. Detects Krisp MCP and the Obsidian Tasks + Dataview plugins; warns if missing.
-- **`skills/`** — 8 portable Claude skills:
+- **`skills/`** — 10 portable Claude skills:
   - `personalize-second-brain` — interviews you once, picks your motion (strategic / coordinator / executor) from a vignette, generates Memory.md and CLAUDE.md, and applies substitutions to your scheduled-task templates. Re-runnable with `--update` (preserves your edits) or `--reset` (backs up and regenerates).
   - `migrate-claude-project` — seeds your vault from existing Claude.ai project folders, Cowork project directories, or any folder of past Claude work. Three-step interactive flow (inventory → confirm → write); files into PARA folders with frontmatter and backlinks per your CLAUDE.md vault rules. Re-runnable across multiple folders.
   - `session-context` — 60-second session startup. Reads today's Morning Brief and presents state.
   - `tactical-tasks` — three-altitude task management: Active Priorities (strategic) → TASKS.md (tactical) → Tasks Dashboard (live view).
   - `vault-capture` — capture decisions, frameworks, insights as PARA-filed Obsidian notes with proper frontmatter and backlinks.
-  - `vault-cleanup` — weekly maintenance. Ten checks: dedup, broken backlinks, naming consistency, archival, debris. Always reports before fixing.
+  - `vault-cleanup` — weekly maintenance. Eleven checks: dedup, broken backlinks, naming consistency, archival, debris, and the health of Claude's own auto-memory. Always reports before fixing.
+  - `closeout` — end-of-session forcing function. Reviews the session that just happened, files decisions and outputs into PARA, extracts next actions into TASKS.md. The counterpart to `session-context`.
+  - `distill` — turns raw thinking into a memo, message, or position paper. Writes argument in prose instead of surfacing the outline as numbered pillars.
   - `sanity-check` — confirmation-bias detector. Audits claims against vault evidence + external data.
   - `thinking-partner` — mental-model engine. Catalog of 150+ models, applied based on situation type and orientation.
 - **`scheduled-tasks/`** — `morning-brief.template.md` and `evening-wrap.template.md`. Two-altitude morning brief (~7 min read) and synthesis-only evening reflection (~4 min read). All `{{VARIABLES}}` resolve at personalization time; unselected integration sections strip cleanly.
 - **`vault-template/`** — PARA folder structure plus starter `CLAUDE.md`, `Memory.md`, `TASKS.md`, `Tasks Dashboard.md`, and `Active Priorities.md`. Functional on day one; personalization regenerates CLAUDE.md and Memory.md with your real values.
-- **`docs/`** — six guides: `setup-guide.md`, `krisp-setup.md`, `scheduling-guide.md`, `customization-guide.md`, `motion-explained.md`, `troubleshooting.md`.
+- **`docs/`** — seven guides: `setup-guide.md`, `krisp-setup.md`, `scheduling-guide.md`, `customization-guide.md`, `motion-explained.md`, `multi-machine.md`, `troubleshooting.md`.
 - **`architecture/`** — `second-brain-os.html`. Five-layer architecture reference with print stylesheet. Open in a browser → File → Print → Save as PDF for a clean letter-size export.
 
 ## Quick start
@@ -87,8 +91,8 @@ Tools not on this list still leave the core system working — the matching sect
         └──────────────┘                └──────────────┘
                                 │
                                 ▼
-        Interactive skills: session-context · tactical-tasks
-        vault-capture · vault-cleanup · sanity-check · thinking-partner
+        Interactive skills: session-context · tactical-tasks · closeout
+        vault-capture · vault-cleanup · sanity-check · thinking-partner · distill
 ```
 
 The morning↔evening feedback loop is load-bearing. Morning reads what evening wrote (TASKS.md state, carry-forward). Evening reads what morning intended (Moving the Needle items, daily challenge) and grades the day against it. Breaking the loop breaks the system.
