@@ -144,7 +144,7 @@ body{background:#eef2f7;color:#1e293b;font-family:-apple-system,BlinkMacSystemFo
             <div class="cv bl">Decisions become tracked work</div>
         </div>
     </div>
-    <div class="co bl"><strong>Why plain text.</strong> Markdown is the most AI-accessible format. The agent reads and writes files directly, with zero infrastructure between model and memory. No vendor lock-in. Works with or without AI.</div>
+    <div class="co bl"><strong>Why plain text.</strong> Markdown is the most AI-accessible format. The agent reads and writes files directly, with zero infrastructure between model and memory. No vendor lock-in. Works with or without AI. Multi-session projects add an append-only <code>log.md</code> (date-headed, newest-first, Build/Decision/Fix/Update tags) alongside the hub doc, a fast-scan changelog that doesn't require re-reading the whole project to know what changed.</div>
 </div>
 
 <!-- ═══ 2. SCHEDULED BACKBONE ═══ -->
@@ -273,6 +273,11 @@ body{background:#eef2f7;color:#1e293b;font-family:-apple-system,BlinkMacSystemFo
         </div>
         <div class="wc">Morning Brief Daily Challenge applies one model per day on rotation. The interactive pipeline goes deeper on demand.</div>
     </div>
+</div>
+
+<!-- ═══ DESIGN LINEAGE ═══ -->
+<div class="co bl" style="margin-top:8px">
+    <strong>Where these ideas come from.</strong> This system is a synthesis of adapted prior art, not an invention from scratch, and we'd rather say so than imply otherwise. <strong>PARA</strong> (Tiago Forte) gives the vault its Projects / Areas / Resources / Archive structure. <strong>Open Knowledge Format / OKF v0.1</strong> (Google Cloud, June 2026) informs the frontmatter conventions and the per-project <code>log.md</code> changelog pattern in Persistent Knowledge, chosen because its permissive, tolerant-of-partial-state design fits an agent-written vault better than a strict schema would. <strong>Hermes-style tool-calling conventions</strong> (Nous Research) inform how the agent/tool layer is structured wherever this system extends past Claude to a local or self-hosted agent. Each pattern was evaluated on its own merits and adapted to this system's actual constraints, not adopted wholesale.
 </div>
 
 <!-- Footer -->
