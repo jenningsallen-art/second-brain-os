@@ -333,12 +333,22 @@ PY
 
 **Second pass, vault-side resolution** (the check above only proves a link is *shaped* like a vault link):
 
+Set both paths explicitly. The vault root is deliberately not derived from the memory
+directory: if memory is still in its default location outside the vault, any derived path
+lands in `~/.claude/projects` and the script reports every vault link as missing instead of
+failing loudly.
+
 ```bash
-cd "<vault>/5 - Meta/claude-memory" && python3 - << 'PY'
+MEMORY_DIR="<path to your claude-memory directory>"   # default: ~/.claude/projects/<key>/memory
+VAULT_ROOT="<path to your vault>"
+
+cd "$MEMORY_DIR" && VAULT_ROOT="$VAULT_ROOT" python3 - << 'PY'
 import glob,re,os
-V=os.path.abspath("../..")
+V=os.environ["VAULT_ROOT"]
+assert os.path.isdir(V), f"VAULT_ROOT is not a directory: {V}"
 notes={os.path.splitext(f)[0] for r,d,fs in os.walk(V)
        if "5 - Meta" not in r and "/." not in r for f in fs if f.endswith(".md")}
+assert notes, f"no notes found under {V} — is VAULT_ROOT pointing at your vault?"
 files=[f for f in sorted(glob.glob("*.md")) if f!="MEMORY.md"]
 slugs={f[:-3].replace("_","-") for f in files}
 miss=set()
